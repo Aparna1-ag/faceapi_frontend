@@ -9,6 +9,7 @@ const Login2 = () => {
     const [descriptorArr, setDescritorArr] = useState([])
 
     const [formdata, setFormData]  =  useState([])
+    const [username, setUsername] = useState("")
 
     const [loginBtn, setLoginBtn] = useState(true)
 
@@ -140,6 +141,28 @@ const postfaceData = async () => {
     }
 }
 
+// const postfaceData = async () => {
+//     console.log(username)
+//     try {
+//         const response = await fetch("http://localhost:3608/sendfacedata", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type" : "application/json"
+//             },
+//             // body: JSON.stringify({descriptorArray: formdata})
+//             body: JSON.stringify({empName: username,  descriptorArray: formdata})
+
+//         })
+
+//         const result  = await response.json()
+
+//         console.log(result)
+
+//     } catch (err) {
+//         console.log(err)
+//     }
+// }
+
 const handleSubmit = () => {
     console.log(formdata)
 
@@ -167,6 +190,10 @@ const handleSubmit = () => {
 
 
         </video>
+
+        <label> Enter Username</label>
+
+        <input className='input' onChange={(e) => setUsername(e.target.value)} />
 
         <button className='btn btn-secondary mt-5'  disabled={loginBtn}  onClick={handleSubmit}> Login   </button>
 
