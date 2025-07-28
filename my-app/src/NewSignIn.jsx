@@ -15,6 +15,8 @@ const NewSignIn = () => {
 
     const [success, setSuccess] = useState(false)
 
+    const [message, setMessage] = useState("")
+
 
 
 
@@ -136,7 +138,16 @@ const NewSignIn = () => {
 
             const result = await response.json()
 
-            if (result.success) setSuccess(true)
+            if (result.success)  {
+                setSuccess(true) 
+            } else {
+                setMessage(result.message)
+
+            }
+
+
+               
+
 
         } catch (err) {
             console.log(err)
@@ -189,6 +200,10 @@ const NewSignIn = () => {
     <Link to="/login"><button className='btn btn-primary'>  Login </button></Link>
     
     </div>
+}
+
+{
+    <div className='text-3xl text-red-500 mt-5'> {message} </div>
 }
 
 
