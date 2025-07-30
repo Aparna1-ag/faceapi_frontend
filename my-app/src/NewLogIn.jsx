@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRef } from 'react'
 import * as faceapi from "face-api.js"
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -10,6 +11,8 @@ const NewLogIn = () => {
     const webcamEl = useRef(null)
 
     const canvasRef = useRef(null)
+
+    const navigate = useNavigate()
 
 
     const [formdata, setFormData] = useState([])
@@ -81,10 +84,14 @@ const NewLogIn = () => {
                     canvasRef.current.style.top = webcamEl.current.offsetTop + 'px'
                     canvasRef.current.style.left = webcamEl.current.offsetLeft + 'px'
 
-                webcamEl.current.onloadedmetadata = () => {
+                // webcamEl.current.onloadedmetadata(() => {
                     canvasRef.current.width = webcamEl.current.videoWidth
                     canvasRef.current.height = webcamEl.current.videoHeight
-                }
+
+                // }) 
+                // = () => {
+                    
+                // }
 
                   
 
@@ -131,37 +138,35 @@ const NewLogIn = () => {
                     console.log(detectionScore)
 
 
-                    //   const ctx = canvasRef.current.getContext("2d")
-                    // ctx.clearRect(0, 0 , canvasRef.current.width, canvasRef.current.height)
+                      const ctx = canvasRef.current.getContext("2d")
+                    ctx.clearRect(0, 0 , canvasRef.current.width, canvasRef.current.height)
 
 
 
 
-                    //    const resizedDetections = faceapi.resizeResults(detections, {
-                    //               width: webcamEl.current.videoWidth,
-                    //               height: webcamEl.current.videoHeight
-                    //             })
+                       const resizedDetections = faceapi.resizeResults(detections, {
+                                  width: webcamEl.current.videoWidth,
+                                  height: webcamEl.current.videoHeight
+                                })
 
-                                // console.log(resizedDetections)
+                                console.log(resizedDetections)
                                 
  
-                                // resizedDetections.forEach(item => {
-                                //   const {}
-                                // })
+                              
                     
                                 // faceapi.draw.drawDetections(canvasRef.current, resizedDetections)
 
-                                // const options  = {
-                                //     label: "hello",
-                                //     lineWidth: 2,
-                                //     boxColor: 'green'
-                                // }
+                                const options  = {
+                                    label: "",
+                                    lineWidth: 4,
+                                    boxColor: 'blue'
+                                }
 
-                                // // console.log(faceWithBestDetection.detection.box)
+                                // console.log(faceWithBestDetection.detection.box)
 
-                                // const drawBox = new faceapi.draw.DrawBox(faceWithBestDetection.detection.box, options)
+                                const drawBox = new faceapi.draw.DrawBox(faceWithBestDetection.detection.box, options)
 
-                                // drawBox.draw(canvasRef.current)
+                                drawBox.draw(canvasRef.current)
 
 
 
@@ -238,6 +243,11 @@ const NewLogIn = () => {
 
             const result = await response.json()
             setMatchResult(result.matchResult)
+            setTimeout(() => {
+                if (result.matchResult === true) navigate('/dashboard')
+
+            }, 1500)
+
             // setRecognisedface(result.bestMatchFace, + "(" + result.indicator + ")") 
 
             console.log(result)
@@ -275,34 +285,37 @@ const NewLogIn = () => {
             <h1 className='text-3xl'>Log In</h1>
             <h2 className='mb-5'> Look in the camera and click Log In </h2>
 
-         <div className="comtainer" style={{position: "relative"}}> 
+         <div className="comtainer" style={{position: "relative", display: "flex", justifyContent: "center" }}> 
          <video autoPlay width={600} height={500} ref={webcamEl} playsInline>
 
 
 </video>
 
-<canvas ref={canvasRef} style={{position: "absolute", top: 0, left: 0}}></canvas>
+<canvas ref={canvasRef} style={{position: "absolute", top: 0, left: 0, pointerEvents: "none", zIndex: 10}}></canvas>
          </div>
 
 
+            <div className='flex justify-center mt-3'>
             <input className='input mt-5 ' onChange={(e) => setCurrentUserId(e.target.value)} />
-
-
-
-
             <button className='btn btn-secondary mt-5' disabled={loginBtn} onClick={handleSubmit}> Login   </button>
+
+            </div>
+
+
+
+
 
 
             {/* <h1 className='text-3xl text-green-500 mt-5'>{recognisedFace}</h1> */}
-            <div className='text-3xl  mt-5'>{matchResult === true && <h1 className='text-green-500'>Face Matched!</h1> }</div>
+            <div className='text-3xl text-center mt-5'>{matchResult === true && <h1 className='text-green-500'>Face Matched!</h1> }</div>
 
-            <div className='text-3xl  mt-5'>{matchResult === false && <h1 className='text-red-500'>Face Did Not Match!</h1> }</div>
+            <div className='text-3xl text-center mt-5'>{matchResult === false && <h1 className='text-red-500'>Face Did Not Match!</h1> }</div>
 
 
 
-            <div className=' text-red-500 mt-5'> {multipleFacesMessage} </div>
+            <div className=' text-red-500text-center mt-5'> {multipleFacesMessage} </div>
 
-            <div className=' text-red-500 mt-5'> {detectionScoreMessage} </div>
+            <div className=' text-red-500text-center mt-5'> {detectionScoreMessage} </div>
 
 
 

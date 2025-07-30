@@ -7,6 +7,7 @@ import Home from './Home'
 import Login2 from './Login2'
 import NewSignIn from './NewSignIn'
 import NewLogIn from './NewLogIn'
+import Dashboard from './Dashboard'
 
 
 
@@ -32,6 +33,8 @@ const App = () => {
 
   <Route path='/signin' element={ <NewSignIn />} />
   <Route path='/login' element={ <NewLogIn />} />
+  <Route path='/dashboard' element={ <Dashboard />} />
+
 
 
 
