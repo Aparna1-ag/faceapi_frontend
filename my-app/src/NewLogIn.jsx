@@ -16,6 +16,9 @@ const NewLogIn = () => {
 
     const [recognisedFace, setRecognisedface] = useState("")
 
+    const [currentUserId, setCurrentUserId] = useState("")
+    const [matchResult, setMatchResult] = useState()
+
 
 
     useEffect(() => {
@@ -125,18 +128,19 @@ const NewLogIn = () => {
 
     const postfaceData = async () => {
         try {
-            const response = await fetch("http://localhost:3608/compare", {
+            const response = await fetch("http://localhost:3608/loginface", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 // body: JSON.stringify({descriptorArray: formdata})
-                body: JSON.stringify({ userFace: formdata })
+                body: JSON.stringify({ userFace: formdata, userId : currentUserId })
 
             })
 
             const result = await response.json()
-            setRecognisedface(result.bestMatchFace, + "(" + result.indicator + ")") 
+            setMatchResult(result.matchResult)
+            // setRecognisedface(result.bestMatchFace, + "(" + result.indicator + ")") 
 
             console.log(result)
 
@@ -179,11 +183,21 @@ const NewLogIn = () => {
             </video>
 
 
+            <input className='input mt-5 ' onChange={(e) => setCurrentUserId(e.target.value)} />
+
+
+
 
             <button className='btn btn-secondary mt-5' disabled={loginBtn} onClick={handleSubmit}> Login   </button>
 
 
-            <h1 className='text-3xl text-green-500 mt-5'>{recognisedFace}</h1>
+            {/* <h1 className='text-3xl text-green-500 mt-5'>{recognisedFace}</h1> */}
+            <div className='text-3xl  mt-5'>{matchResult === true && <h1 className='text-green-500'>Face Matched!</h1> }</div>
+
+            <div className='text-3xl  mt-5'>{matchResult === false && <h1 className='text-red-500'>Face Did Not Match!</h1> }</div>
+
+
+            
 
 
 
