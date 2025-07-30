@@ -9,6 +9,8 @@ const NewLogIn = () => {
 
     const webcamEl = useRef(null)
 
+    const canvasRef = useRef(null)
+
 
     const [formdata, setFormData] = useState([])
 
@@ -18,6 +20,9 @@ const NewLogIn = () => {
 
     const [currentUserId, setCurrentUserId] = useState("")
     const [matchResult, setMatchResult] = useState()
+    const [multipleFacesMessage, setMultiplefacesMessage] = useState("")
+    const [detectionScoreMessage, setDetectionScoreMessage] = useState("")
+
 
 
 
@@ -71,18 +76,107 @@ const NewLogIn = () => {
 
             try {
 
-                if (webcamEl.current) {
+                if (webcamEl.current && canvasRef.current) {
+
+                    canvasRef.current.style.top = webcamEl.current.offsetTop + 'px'
+                    canvasRef.current.style.left = webcamEl.current.offsetLeft + 'px'
+
+                webcamEl.current.onloadedmetadata = () => {
+                    canvasRef.current.width = webcamEl.current.videoWidth
+                    canvasRef.current.height = webcamEl.current.videoHeight
+                }
+
+                  
+
+
+
+
                     const detections = await faceapi.detectAllFaces(webcamEl.current).withFaceLandmarks().withFaceDescriptors()
+
+                    if (detections.length > 1) {
+                        setMultiplefacesMessage("Multiple Faces detected. Please insert only one face in the cam")
+                    } else if (detections.length === 0) {
+                        setMultiplefacesMessage("No faces detected. Please insert face properly")
+
+                    } else {
+                        if (detections.length === 1) {
+                            setMultiplefacesMessage("")
+
+
+                        }
+                    }
+
+
+                    let faceWithBestDetection = detections[0]
+
+                    for (let each of detections) {
+                        if (each.detection.score > faceWithBestDetection) {
+                            faceWithBestDetection = each
+                        }
+                    }
+
+                    let detectionScore = faceWithBestDetection.detection.score
+
+
+
+                    if (detectionScore < 0.8) {
+                        setDetectionScoreMessage("Face not detected. Please insert your face properly")
+                    } else {
+                        setDetectionScoreMessage("")
+                    }
+
+
+
+                    // console.log(detections)
+                    console.log(detectionScore)
+
+
+                    //   const ctx = canvasRef.current.getContext("2d")
+                    // ctx.clearRect(0, 0 , canvasRef.current.width, canvasRef.current.height)
+
+
+
+
+                    //    const resizedDetections = faceapi.resizeResults(detections, {
+                    //               width: webcamEl.current.videoWidth,
+                    //               height: webcamEl.current.videoHeight
+                    //             })
+
+                                // console.log(resizedDetections)
+                                
+ 
+                                // resizedDetections.forEach(item => {
+                                //   const {}
+                                // })
+                    
+                                // faceapi.draw.drawDetections(canvasRef.current, resizedDetections)
+
+                                // const options  = {
+                                //     label: "hello",
+                                //     lineWidth: 2,
+                                //     boxColor: 'green'
+                                // }
+
+                                // // console.log(faceWithBestDetection.detection.box)
+
+                                // const drawBox = new faceapi.draw.DrawBox(faceWithBestDetection.detection.box, options)
+
+                                // drawBox.draw(canvasRef.current)
+
+
+
+
+
                     // console.log(detections[0].descriptor)
                     // console.log(detections[0].descriptor[0])
                     const descriptorArrayResult = []
 
                     for (let x = 0; x < 128; x++) {
-                        descriptorArrayResult.push(detections[0].descriptor[x])
+                        descriptorArrayResult.push(faceWithBestDetection.descriptor[x])
 
                     }
 
-                    console.log(JSON.stringify(descriptorArrayResult))
+                    // console.log(JSON.stringify(descriptorArrayResult))
                     // console.log(detections[0].descriptor)
 
 
@@ -107,7 +201,11 @@ const NewLogIn = () => {
 
 
         setTimeout(() => {
-            findDescriptors()
+            setInterval(() => {
+                findDescriptors()
+
+            }, 2000)
+
             setLoginBtn(false)
 
         }, 3000)
@@ -177,10 +275,14 @@ const NewLogIn = () => {
             <h1 className='text-3xl'>Log In</h1>
             <h2 className='mb-5'> Look in the camera and click Log In </h2>
 
-            <video autoPlay width={600} height={500} ref={webcamEl}>
+         <div className="comtainer" style={{position: "relative"}}> 
+         <video autoPlay width={600} height={500} ref={webcamEl} playsInline>
 
 
-            </video>
+</video>
+
+<canvas ref={canvasRef} style={{position: "absolute", top: 0, left: 0}}></canvas>
+         </div>
 
 
             <input className='input mt-5 ' onChange={(e) => setCurrentUserId(e.target.value)} />
@@ -195,6 +297,13 @@ const NewLogIn = () => {
             <div className='text-3xl  mt-5'>{matchResult === true && <h1 className='text-green-500'>Face Matched!</h1> }</div>
 
             <div className='text-3xl  mt-5'>{matchResult === false && <h1 className='text-red-500'>Face Did Not Match!</h1> }</div>
+
+
+
+            <div className=' text-red-500 mt-5'> {multipleFacesMessage} </div>
+
+            <div className=' text-red-500 mt-5'> {detectionScoreMessage} </div>
+
 
 
             
