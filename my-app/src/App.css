@@ -7,3 +7,48 @@
 .myCanvas{
     position: absolute;
 }
+
+
+.animation-container {
+width: 500px; 
+height: 500px;
+/* background: pink; */
+position: relative;
+border: 2px solid magenta
+
+
+
+
+}
+
+
+.custom-line {
+    /* background-color: blueviolet; */
+    /* background-color: rgba(112, 128, 144, 0.468); */
+    background-color: lightgreen;
+
+
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: moveUpAndDown 3.5s ease-in-out infinite alternate;
+    
+}
+
+@keyframes moveUpAndDown {
+    0% {
+        top: 0
+    }
+
+    100% {
+        top : calc(100% - 30px)
+    }
+
+}
+
+
+.dummy {
+    color: #3f95c352
+}

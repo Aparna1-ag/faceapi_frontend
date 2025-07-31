@@ -103,7 +103,7 @@ const NewLogIn = () => {
                     if (detections.length > 1) {
                         setMultiplefacesMessage("Multiple Faces detected. Please insert only one face in the cam")
                     } else if (detections.length === 0) {
-                        setMultiplefacesMessage("No faces detected. Please insert face properly")
+                        setMultiplefacesMessage("No face detected. Please make sure your whole face shows. Please remove sunglasses, caps, masks etc")
 
                     } else {
                         if (detections.length === 1) {
@@ -127,12 +127,12 @@ const NewLogIn = () => {
 
 
                     if (detectionScore < 0.8) {
-                        setDetectionScoreMessage("Face not detected. Please insert your face properly")
+                        setDetectionScoreMessage("Face not detected. Please make sure your whole face shows. Please remove sunglasses, caps, masks etc")
                     } else {
                         setDetectionScoreMessage("")
                     }
 
-
+ß
 
                     // console.log(detections)
                     console.log(detectionScore)
@@ -159,14 +159,14 @@ const NewLogIn = () => {
                                 const options  = {
                                     label: "",
                                     lineWidth: 4,
-                                    boxColor: 'blue'
+                                    boxColor: '#3f95c352'
                                 }
 
                                 // console.log(faceWithBestDetection.detection.box)
 
-                                const drawBox = new faceapi.draw.DrawBox(faceWithBestDetection.detection.box, options)
+                                // const drawBox = new faceapi.draw.DrawBox(faceWithBestDetection.detection.box, options)
 
-                                drawBox.draw(canvasRef.current)
+                                // drawBox.draw(canvasRef.current)
 
 
 
@@ -285,8 +285,12 @@ const NewLogIn = () => {
             <h1 className='text-3xl'>Log In</h1>
             <h2 className='mb-5'> Look in the camera and click Log In </h2>
 
-         <div className="comtainer" style={{position: "relative", display: "flex", justifyContent: "center" }}> 
-         <video autoPlay width={600} height={500} ref={webcamEl} playsInline>
+         <div className="container" style={{position: "relative", width: "550px", height: "650px", display: "flex", justifyContent: "center"}}> 
+         <div className=' custom-line'  >
+
+
+</div>
+         <video autoPlay width={600} height={900} ref={webcamEl} playsInline style={{objectFit: "cover", width: "full", height: "full"}}>
 
 
 </video>
@@ -295,11 +299,9 @@ const NewLogIn = () => {
          </div>
 
 
-            <div className='flex justify-center mt-3'>
-            <input className='input mt-5 ' onChange={(e) => setCurrentUserId(e.target.value)} />
-            <button className='btn btn-secondary mt-5' disabled={loginBtn} onClick={handleSubmit}> Login   </button>
+            <div className=' text-red-500 text-xl text-center mt-5'> {multipleFacesMessage} </div>
 
-            </div>
+<div className=' text-red-500 text-xl text-center mt-5'> {detectionScoreMessage} </div>
 
 
 
@@ -312,10 +314,28 @@ const NewLogIn = () => {
             <div className='text-3xl text-center mt-5'>{matchResult === false && <h1 className='text-red-500'>Face Did Not Match!</h1> }</div>
 
 
+            <div className='flex  mt-3'>
+            <input className='input mt-5 ' onChange={(e) => setCurrentUserId(e.target.value)} />
 
-            <div className=' text-red-500text-center mt-5'> {multipleFacesMessage} </div>
+            <button className='btn btn-secondary mt-5' disabled={loginBtn} onClick={handleSubmit}> Login   </button>
 
-            <div className=' text-red-500text-center mt-5'> {detectionScoreMessage} </div>
+            </div>
+
+
+
+        {/* <div className='animation-container'>
+            hello
+            <div className=' custom-line'  >
+
+
+            </div>
+
+
+        </div> */}
+
+
+
+        
 
 
 
